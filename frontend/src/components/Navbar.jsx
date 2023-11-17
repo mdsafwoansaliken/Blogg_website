@@ -1,16 +1,16 @@
 import { Link } from "react-router-dom"
 import { FaBars, FaSearch } from "react-icons/fa";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Menu from "./Menu";
+import { UserContext } from "../context/UserContext";
 
 const Navbar = () => {
   const [menu,setMenu]=useState(false)
   const showMenu=()=>{
     setMenu(!menu)
   }
+  const {user}=useContext(UserContext)
 
-
-    const user=false
   return (
     <div className="flex items-center justify-between px-6 md:px-[200px] py-4">
         <h1 className="text-lg md:text-xl font-extrabold"><Link to="/">Blog Market</Link></h1>
