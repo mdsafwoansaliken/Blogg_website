@@ -3,41 +3,71 @@ import Navbar from "../components/Navbar"
 import {BiEdit} from 'react-icons/bi'
 import {MdDelete} from 'react-icons/md'
 import Comment from "../components/Comment"
+import { useParams } from "react-router-dom"
+import axios from "axios"
+import { URL } from "../url"
+import { useContext, useEffect, useState } from "react"
+import { UserContext } from "../context/UserContext"
+import Loader from "../components/Loader"
 
 const PostDetails = () => {
-  return (
-    <div>
+
+    const postId = useParams().id
+    const [post, setPost] = useState({})
+    const {user} = useContext(UserContext)
+    const [loader, setLoader] = useState(false)
+
+    const fetchPost = async()=>{
+        setLoader(true)
+        try{
+            const res = await axios.get(URL+"/api/posts/"+postId)
+           
+           setPost(res.data)
+           setLoader(false)
+        }
+        catch(err){
+            console.log(err)
+            setLoader(true)
+        }
+    }
+
+
+    useEffect(()=>{
+        fetchPost()
+
+    },[postId])
+    return (
+        <div>
         <Navbar/>
-        <div className="px-8 px-[200px] mt-8">
+        {loader?<div className="h-[80vh] flex justify-center items-center w-full"><Loader/></div>:<div className="px-8 px-[200px] mt-8">
             <div className="flex justify-between items-center">
-                <h1 className="text-2xl font-bold text-black md:text-3xl">10 Uses of Artifical Intelligence in Day to Day Life</h1>
+                <h1 className="text-2xl font-bold text-black md:text-3xl">{post.title}</h1>
+                {user?.id ===post?.userId &&
                 <div className="flex items-center justify-center space-x-2">
+                    
                     <p><BiEdit/></p>
                     <p><MdDelete/></p>
-                </div>
+                </div>}
             </div>
             <div className="flex items-center justify-between mt-2 md:mt-4">
-            <p>@blogg_app</p>
+            <p>@{post.username}</p>
             <div className="flex space-x-2">
-              <p>11/16/2023</p>
-              <p>16:45</p>
+            <p>{new Date(post.updatedAt).toString().slice(0,15)}</p>
+              <p>{new Date(post.updatedAt).toString().slice(16,24)}</p>
             </div>
             </div>
-            <img src="https://source.unsplash.com/random/200x200?sig=1" className=" mx-auto mt-8" alt=""/>
-            <p className="mx-auto mt-8">Artificial Intelligence (AI) has seamlessly integrated into our daily routines, revolutionizing the way we live, work, and 
-            interact with technology. From subtle conveniences to significant advancements, AI's pervasive influence is evident across 
-            various aspects of our day-to-day lives. Its adaptive algorithms and problem-solving capabilities have ushered in a new era,
-            shaping experiences and optimizing efficiency in numerous domains, fundamentally altering how we navigatethe modern world.
-            </p>
+            <img src={post.photo} className=" mx-auto mt-8" alt=""/>
+            <p className="mx-auto mt-8">{post.desc}</p>
             <div className="flex items-center mt-8 space-x-4 font-semibold">
                 <p>Categories:</p>
                 <div className="flex justify-center items-center space-x-2">
-                    <div className="bg-gray-300 rounded-lg px-3 py-1">
-                        Tech
-                    </div>
-                    <div className="bg-gray-300 rounded-lg px-3 py-1">
-                        Ai
-                    </div>
+                    {post.categories?.map((c,i)=>(
+                        <>
+                            <div key={i} className="bg-gray-300 rounded-lg px-3 py-1">
+                                {c}
+                            </div>
+                        </>
+                    ))}
                 </div>
             </div>
             <div className="flex flex-col mt-4">
@@ -50,7 +80,7 @@ const PostDetails = () => {
                 <input type='text' placeholder="Write a comment" className="md:w-[80%] outline-none py-2 px-4 mt-4 md:mt-0"/>
                 <button className="bg-black text-sm text-white px-4 py-2 md:w-[20%] mt-4 md:mt-0">Add Comment</button>
             </div>
-        </div>
+        </div>}
         <Footer/>
     </div>
   )
