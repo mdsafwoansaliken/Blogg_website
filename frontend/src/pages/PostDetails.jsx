@@ -3,9 +3,9 @@ import Navbar from "../components/Navbar"
 import {BiEdit} from 'react-icons/bi'
 import {MdDelete} from 'react-icons/md'
 import Comment from "../components/Comment"
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import axios from "axios"
-import { URL } from "../url"
+import { URL, IF } from "../url"
 import { useContext, useEffect, useState } from "react"
 import { UserContext } from "../context/UserContext"
 import Loader from "../components/Loader"
@@ -16,6 +16,7 @@ const PostDetails = () => {
     const [post, setPost] = useState({})
     const {user} = useContext(UserContext)
     const [loader, setLoader] = useState(false)
+    const navigate = useNavigate()
 
     const fetchPost = async()=>{
         setLoader(true)
@@ -31,6 +32,16 @@ const PostDetails = () => {
         }
     }
 
+    const handleDeletePost=async()=>{
+        try{
+            await axios.delete(URL+"/api/posts/"+postId, {withCredentials:true})
+            navigate("/")
+        }
+        catch(err){
+            console.log(err)
+        }
+    }
+
 
     useEffect(()=>{
         fetchPost()
@@ -42,11 +53,11 @@ const PostDetails = () => {
         {loader?<div className="h-[80vh] flex justify-center items-center w-full"><Loader/></div>:<div className="px-8 px-[200px] mt-8">
             <div className="flex justify-between items-center">
                 <h1 className="text-2xl font-bold text-black md:text-3xl">{post.title}</h1>
-                {user?.id ===post?.userId &&
+                {user?._id ===post?.userId &&
                 <div className="flex items-center justify-center space-x-2">
                     
-                    <p><BiEdit/></p>
-                    <p><MdDelete/></p>
+                    <p className="cursor-pointer" onClick={()=>navigate("/edit/"+postId)}><BiEdit/></p>
+                    <p className="cursor-pointer" onClick={handleDeletePost}><MdDelete/></p>
                 </div>}
             </div>
             <div className="flex items-center justify-between mt-2 md:mt-4">
@@ -56,7 +67,7 @@ const PostDetails = () => {
               <p>{new Date(post.updatedAt).toString().slice(16,24)}</p>
             </div>
             </div>
-            <img src={post.photo} className=" mx-auto mt-8" alt=""/>
+            <img src={IF+post.photo} className=" mx-auto mt-8" alt=""/>
             <p className="mx-auto mt-8">{post.desc}</p>
             <div className="flex items-center mt-8 space-x-4 font-semibold">
                 <p>Categories:</p>

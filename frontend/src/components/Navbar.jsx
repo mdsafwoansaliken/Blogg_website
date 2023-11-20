@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import { FaBars, FaSearch } from "react-icons/fa";
 import { useContext, useState } from "react";
 import Menu from "./Menu";
@@ -9,6 +9,7 @@ const Navbar = () => {
   const [prompt, setPrompt] = useState("")
   const [menu,setMenu]=useState(false)
   const navigate=useNavigate()
+  const path = useLocation().pathname
   //console.log(prompt)
 
   const showMenu=()=>{
