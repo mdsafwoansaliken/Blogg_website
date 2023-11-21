@@ -41,6 +41,7 @@ const Home = () => {
   useEffect(()=>{
     fetchPosts()
   },[search])
+
   return (
     <>
     <Navbar/>
