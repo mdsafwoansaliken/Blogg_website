@@ -68,35 +68,67 @@ const CreatePost = () => {
 
   return (
     <div>
-      <Navbar/>
+      <Navbar />
       <div className="px-6 md:px-[200px] mt-8">
-        <h1 className="font-bold md:text-2xl text-xl mt-8">Create a post</h1>
-        <form className="w-full flex flex-col space-y-4 md:space-y-8 mt-4">
-            <input onChange={(e)=>setTitle(e.target.value)} type='text' placeholder="Enter post title" className="px-4 py-2 outline-none"/>
-            <input onChange={(e)=>setFile(e.target.files[0])} type='file' className="px-4"/>
-            <div className="flex flex-col">
-                <div className="flex items-center space-x-4 md:space-x-8">
-                    <input value={cat} onChange={(e)=>setCat(e.target.value)} className="px-4 py-2 outline-none" placeholder="Enter post category" type="text"/>
-                    <div onClick={addCategory} className="bg-black text-white px-4 py-2 font-semibold cursor-pointer">ADD</div>
-                </div>
-
-                {/* categories */}
-                <div className="flex px-4 mt-3">
-                    {cats?.map((c,i)=>(
-                <div key={i} className="flex justify-center items-center space-x-2 mr-4 bg-gray-200 px-2 py-1 rounded-md">
+        <h1 className="font-bold md:text-4xl text-2xl mt-8 mb-6">Create a Post</h1>
+        <form className="w-full max-w-lg mx-auto bg-white rounded-lg shadow-md p-8">
+          <input
+            onChange={(e) => setTitle(e.target.value)}
+            type="text"
+            placeholder="Enter post title"
+            className="w-full px-4 py-2 mb-4 rounded border border-gray-300 focus:outline-none focus:border-indigo-500"
+          />
+          <input
+            onChange={(e) => setFile(e.target.files[0])}
+            type="file"
+            className="w-full mb-4"
+          />
+          <div className="flex items-center mb-4">
+            <input
+              value={cat}
+              onChange={(e) => setCat(e.target.value)}
+              className="flex-1 px-4 py-2 rounded border border-gray-300 focus:outline-none focus:border-indigo-500"
+              placeholder="Enter post category"
+              type="text"
+            />
+            <div
+              onClick={addCategory}
+              className="ml-4 bg-black text-white px-4 py-2 font-semibold rounded cursor-pointer"
+            >
+              ADD
+            </div>
+          </div>
+          <div className="flex flex-wrap mb-4">
+            {cats?.map((c, i) => (
+              <div
+                key={i}
+                className="flex justify-center items-center space-x-2 bg-gray-200 px-2 py-1 rounded-md mr-4 mb-2"
+              >
                 <p>{c}</p>
-                <p onClick={() => deleteCategory(i)} className="text-white bg-black rounded-full cursor-pointer p-1 text-sm"><ImCross/></p>
-            </div>
-                    ))}
-
-
-                </div>                
-            </div>
-            <textarea onChange={(e)=>setDesc(e.target.value)} rows={15} cols={30} className="px-4 py-2 outline-none" placeholder="Enter post description"/>
-            <button onClick={handleCreate} className="bg-black w-full md:w-[20%] mx-auto text-white font-semibold px-4 py-2 md:text-xl text-lg">Create</button>
+                <p
+                  onClick={() => deleteCategory(i)}
+                  className="text-white bg-red-500 rounded-full cursor-pointer p-1 text-sm"
+                >
+                  <ImCross />
+                </p>
+              </div>
+            ))}
+          </div>
+          <textarea
+            onChange={(e) => setDesc(e.target.value)}
+            rows={8}
+            className="w-full px-4 py-2 mb-4 rounded border border-gray-300 focus:outline-none focus:border-indigo-500"
+            placeholder="Enter post description"
+          />
+          <button
+            onClick={handleCreate}
+            className="w-full bg-indigo-500 text-white font-semibold py-2 rounded hover:bg-indigo-600 focus:outline-none focus:bg-indigo-600"
+          >
+            Create
+          </button>
         </form>
       </div>
-      <Footer/>
+      <Footer />
     </div>
   )
 }

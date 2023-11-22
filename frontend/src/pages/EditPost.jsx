@@ -76,12 +76,14 @@ const EditPost = () => {
         setCats(updatedCats)
     }
 
-    const addCategory=()=> {
-        let updatedCats=[...cats]
-        updatedCats.push(cat)
-        setCat('')
-        setCats(updatedCats)
-    }    
+    const addCategory = () => {
+      if (cat.trim() !== "") {
+          let updatedCats = [...cats];
+          updatedCats.push(cat);
+          setCat('');
+          setCats(updatedCats);
+      }
+  }
   return (
     
     <div>
