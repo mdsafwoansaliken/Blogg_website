@@ -6,11 +6,12 @@ import axios from "axios"
 import { URL } from "../url"
 import { useNavigate, useParams } from "react-router-dom"
 import { UserContext } from "../context/UserContext"
+import { useUser } from "../context/UserContext"
 
 
 const EditPost = () => {
     const postId = useParams().id
-    const {user} = useContext(UserContext)
+    const {user} = useUser();
     const navigate = useNavigate()
     const [title, setTitle] = useState("")
     const [desc, setDesc] = useState("")

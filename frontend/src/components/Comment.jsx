@@ -3,10 +3,11 @@ import { URL } from "../url";
 import { BiEdit } from "react-icons/bi";
 import { MdDelete } from "react-icons/md";
 import { useContext, useState } from "react";
-import { UserContext } from "../context/UserContext";
+//import { UserContext } from "../context/UserContext";
+import { useUser } from "../context/UserContext";
 
 const Comment = ({ c, post, postUpdateComment, postDeleteComment }) => {
-  const { user } = useContext(UserContext);
+  const { user } = useUser();
   const [isEditing, setIsEditing] = useState(false);
   const [editedComment, setEditedComment] = useState(c.comment);
 

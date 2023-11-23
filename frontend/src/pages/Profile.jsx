@@ -1,77 +1,82 @@
-import Navbar from "../components/Navbar"
-import ProfilePosts from "../components/ProfilePosts"
-import Footer from "../components/Footer"
-import { useContext, useEffect, useState } from "react"
-import { IF, URL } from "../url"
-import { UserContext } from "../context/UserContext"
-import axios from "axios"
-import { useNavigate, useParams } from "react-router-dom"
-
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useNavigate, useParams } from 'react-router-dom';
+import { URL } from '../url';
+import { useUser } from '../context/UserContext';
+import Navbar from '../components/Navbar';
+import ProfilePosts from '../components/ProfilePosts';
+import Footer from '../components/Footer';
 
 const Profile = () => {
-  const param = useParams().id
-  const [password, setPassword] = useState("")
-  const [username, setUsername] = useState("")
-  const [email, setEmail] = useState("")
-  const {user,setUser} = useContext(UserContext)
-  const [posts, setPosts] = useState([])
-  const navigate = useNavigate()
-  const [updated, setUpdated] = useState(false)
+  const { user, updateUser } = useUser();
+  const { id } = useParams();
+  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [posts, setPosts] = useState([]);
+  const navigate = useNavigate();
+  const [updated, setUpdated] = useState(false);
 
-  const fetchProfile = async () =>{
-    try{
-      const res = await axios.get(URL+"/api/users/"+user._id)
-      setUsername(res.data.username)
-      setEmail(res.data.email)
-      setPassword(res.data.password)
+  const fetchProfile = async () => {
+    try {
+      const res = await axios.get(URL + '/api/users/' + id);
+      setUsername(res.data.username);
+      setEmail(res.data.email);
+      setPassword(res.data.password);
+    } catch (err) {
+      console.log(err);
     }
-    catch(err){
-      console.log(err)
+  };
+
+  const fetchUserPosts = async () => {
+    try {
+      const res = await axios.get(URL + '/api/posts/user/' + id);
+      setPosts(res.data);
+    } catch (err) {
+      console.log(err);
     }
-  }
+  };
 
-  const handleUserUpdate = async()=>{
-    setUpdated(false)
-    try{
-      const res = await axios.put(URL+"/api/users/"+user._id, {username,email,password}, {withCredentials:true})
-      setUpdated(true)
-
+  const handleUserUpdate = async () => {
+    setUpdated(false);
+    try {
+      const res = await axios.put(
+        URL + '/api/users/' + id,
+        { username, email, password },
+        { withCredentials: true }
+      );
+      setUpdated(true);
+      // Update the user context with the new data
+      updateUser(res.data);
+    } catch (err) {
+      console.log(err);
+      setUpdated(false);
     }
-    catch(err){
-      console.log(err)
-      setUpdated(false)
+  };
+
+  const handleUserDelete = async () => {
+    try {
+      const res = await axios.delete(URL + '/api/users/' + id, { withCredentials: true });
+      updateUser(null);
+      navigate('/');
+    } catch (err) {
+      console.log(err);
     }
+  };
 
-  }
-
-  const handleUserDelete = async ()=>{
-    try{
-      const res = await axios.delete(URL+"/api/users/"+user._id, {withCredentials:true})
-      setUser(null)
-      navigate("/")
+  useEffect(() => {
+    if (user && user._id === id) {
+      // If the logged-in user is viewing their own profile
+      setUsername(user.username);
+      setEmail(user.email);
+      setPassword(user.password);
+      fetchUserPosts();
+    } else {
+      // Fetch data for other user profiles
+      fetchProfile();
+      fetchUserPosts();
     }
-    catch(err){
-      console.log(err)
-    }
-  }
-
-  const fetchUserPosts = async()=>{
-    try{
-      const res = await axios.get(URL+"/api/posts/user/"+user._id)
-      setPosts(res.data)
-    }catch(err){
-      console.log(err)
-    }
-  }
-
-
-  useEffect(()=>{
-    fetchProfile()
-  },[param])
-
-  useEffect(()=>{
-    fetchUserPosts()
-  }, [param])
+  }, [id, user]);
 
   return (
 <div>

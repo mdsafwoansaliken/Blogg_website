@@ -1,5 +1,5 @@
 
-import {Route,Routes} from 'react-router-dom'
+import {BrowserRouter, Route,Routes} from 'react-router-dom'
 import Home from "./pages/Home"
 import Register from "./pages/Register"
 import Login from "./pages/Login"
@@ -13,6 +13,7 @@ import MyBlogs from './pages/MyBlogs'
 
 const App = () => {
   return (
+    <BrowserRouter>
     <UserContextProvider>
       <Routes>
         <Route exact path="/" element={<Home/>}/>
@@ -25,6 +26,7 @@ const App = () => {
         <Route exact path="/profile/:id" element={<Profile/>}/>
       </Routes>
       </UserContextProvider>
+      </BrowserRouter>
   )
 }
 

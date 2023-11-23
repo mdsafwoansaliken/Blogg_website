@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar"
 import {Link, useLocation} from "react-router-dom"
 import { useContext, useEffect, useState } from "react"
 import { UserContext } from "../context/UserContext"
+import { useUser } from "../context/UserContext"
 import axios from "axios"
 import { URL } from "../url"
 import HomePosts from "../components/HomePosts"
@@ -15,7 +16,7 @@ const MyBlogs = () => {
     const [posts,setPosts]=useState([])
     const [noResults, setNoResults] = useState(false)
     const [loader, setLoader] = useState(false)
-    const {user} = useContext(UserContext)
+    const {user} = useUser();
   
     const fetchPosts=async()=>{
       setLoader(true)
@@ -36,9 +37,12 @@ const MyBlogs = () => {
       }
     }
   
-    useEffect(()=>{
-      fetchPosts()
-    },[search])
+    useEffect(() => {
+      // Check if user exists before fetching posts
+      if (user && user._id) {
+        fetchPosts();
+      }
+    }, [search, user]);
 
     return (
         <div>

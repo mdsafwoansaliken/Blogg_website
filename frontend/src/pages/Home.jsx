@@ -7,6 +7,7 @@ import { useContext, useEffect, useState } from "react"
 import { Link, useLocation } from "react-router-dom"
 import Loader from "../components/Loader"
 import { UserContext } from "../context/UserContext"
+import { useUser } from "../context/UserContext"
 
 const Home = () => {
 
@@ -15,7 +16,7 @@ const Home = () => {
   const [posts,setPosts]=useState([])
   const [noResults, setNoResults] = useState(false)
   const [loader, setLoader] = useState(false)
-  const user = useContext(UserContext)
+  const user = useUser();
   console.log(user)
 
   const fetchPosts=async()=>{

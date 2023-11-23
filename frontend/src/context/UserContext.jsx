@@ -1,28 +1,31 @@
-import axios from "axios";
-import { createContext, useEffect, useState } from "react";
-import { URL } from "../url";
+// UserContext.js
 
-export const UserContext = createContext({});
+import { createContext, useContext, useEffect, useState } from 'react';
 
-export function UserContextProvider({ children }) {
+export const UserContext = createContext();
+
+export const UserContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  useEffect(()=>{
-    getUser()
-  },[])
-  const getUser=async()=>{
-    try{
-        const res=await axios.get(URL+"/api/auth/refetch",{withCredentials:true})
-        // console.log(res.data)
-        setUser(res.data)
-    }
-    catch(err){
-        console.log(err)
-    }
-  }
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    const initialUser = storedUser ? JSON.parse(storedUser) : null;
+    
+    setUser(initialUser);
+  }, []); 
+
+  const updateUser = (newUserData) => {
+    setUser(newUserData);
+    localStorage.setItem('user', JSON.stringify(newUserData));
+  };
 
   return (
-    <UserContext.Provider value={{ user, setUser }}>
+    <UserContext.Provider value={{ user, updateUser }}>
       {children}
     </UserContext.Provider>
   );
-}
+};
+
+export const useUser = () => {
+  return useContext(UserContext);
+};

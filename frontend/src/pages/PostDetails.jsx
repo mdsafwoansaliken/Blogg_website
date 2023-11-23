@@ -9,11 +9,12 @@ import { URL, IF } from "../url";
 import { useContext, useEffect, useState } from "react";
 import Loader from "../components/Loader";
 import { UserContext } from "../context/UserContext";
+import { useUser } from "../context/UserContext";
 
 const PostDetails = () => {
   const postId = useParams().id;
   const [post, setPost] = useState({});
-  const { user } = useContext(UserContext);
+  const { user } = useUser();
   const [comments, setComments] = useState([]);
   const [comment, setComment] = useState("");
   const [loader, setLoader] = useState(false);

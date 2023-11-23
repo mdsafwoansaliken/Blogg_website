@@ -3,6 +3,7 @@ import { FaBars, FaSearch } from "react-icons/fa";
 import { useContext, useState } from "react";
 import Menu from "./Menu";
 import { UserContext } from "../context/UserContext";
+import { useUser } from "../context/UserContext";
 
 const Navbar = () => {
   const [prompt, setPrompt] = useState("");
@@ -18,7 +19,7 @@ const Navbar = () => {
     setMenu(!menu);
   };
 
-  const { user } = useContext(UserContext);
+  const { user } = useUser();
 
   return (
     <div className="bg-gray-900 text-white py-4">

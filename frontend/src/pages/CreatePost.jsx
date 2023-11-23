@@ -3,6 +3,7 @@ import Footer from "../components/Footer"
 import Navbar from "../components/Navbar"
 import {ImCross} from "react-icons/im"
 import { UserContext } from "../context/UserContext"
+import { useUser } from "../context/UserContext"
 import { URL } from "../url"
 import axios from 'axios'
 import { Navigate, useNavigate } from "react-router-dom"
@@ -12,7 +13,7 @@ const CreatePost = () => {
     const [title, setTitle] = useState("")
     const [desc, setDesc] = useState("")
     const [file, setFile] = useState(null)
-    const {user} = useContext(UserContext)
+    const {user} = useUser();
     const[cat,setCat]=useState('')
     const [cats,setCats]=useState([])
     const navigate = useNavigate()
