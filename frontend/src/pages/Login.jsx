@@ -4,30 +4,31 @@ import { useContext, useState } from "react"
 import axios from "axios"
 import { URL } from "../url"
 import { UserContext } from "../context/UserContext"
+import { useUser } from "../context/UserContext"
 
 const Login = () => {
   const [email,setEmail]=useState("")
   const [password,setPassword]=useState("")
   const [error,setError]=useState(false)
-  const {setUser}=useContext(UserContext)
+  const {setUser}=useUser();
   const navigate=useNavigate()
+  const { updateUser } = useUser();
 
-  const handleLogin=async()=>{
-    try{
-      const res=await axios.post(URL+"/api/auth/login",{email,password},{withCredentials:true})
-      // console.log(res.data)
-      setUser(res.data)
-      navigate("/")
+  const handleLogin = async () => {
+    try {
+      const res = await axios.post(URL + "/api/auth/login", { email, password }, { withCredentials: true });
+      // Assuming res.data contains user information
+      updateUser(res.data);
+      navigate("/");
+    } catch (err) {
+      setError(true);
+      console.log(err);
     }
-    catch(err){
-      setError(true)
-      console.log(err)
-    }
-  }
+  };
   return (
     <>
     <div className="flex items-center justify-between px-6 md:px-[200px] py-4">
-    <h1 className="text-lg md:text-xl font-extrabold"><Link to="/">Blog-App</Link></h1>
+    <h1 className="text-lg md:text-xl font-extrabold"><Link to="/">Blog Market</Link></h1>
     <h3><Link to='/register'>Register</Link></h3>
     </div>
     <div className="w-full flex justify-center items-center h-[80vh]">
