@@ -99,10 +99,10 @@ const PostDetails = () => {
             <h1 className="text-2xl font-bold text-black md:text-3xl">{post.title}</h1>
             {user?._id === post?.userId && (
               <div className="flex items-center justify-center space-x-2">
-                <p className="cursor-pointer" onClick={() => navigate("/edit/" + postId)}>
+                <p className="cursor-pointer text-gray-900 hover:text-blue-500" onClick={() => navigate("/edit/" + postId)}>
                   <BiEdit />
                 </p>
-                <p className="cursor-pointer" onClick={handleDeletePost}>
+                <p className="cursor-pointer text-gray-900 hover:text-red-500" onClick={handleDeletePost}>
                   <MdDelete />
                 </p>
               </div>
@@ -140,17 +140,17 @@ const PostDetails = () => {
             ))}
           </div>
           {/* write a comment */}
-          <div className="w-full flex flex-col mt-4 md:flex-row">
+          <div className="w-full flex flex-col mt-4 md:flex-row items-center space-x-4">
             <input
               onChange={(e) => setComment(e.target.value)}
               value={comment}
               type="text"
               placeholder="Write a comment"
-              className="md:w-[80%] outline-none py-2 px-4 mt-4 md:mt-0"
+              className="md:w-[80%] outline-none py-2 px-4 rounded-lg border border-gray-300 mb-4 md:mb-0 focus:outline-none"
             />
             <button
               onClick={postComment}
-              className="bg-black text-sm text-white px-4 py-2 md:w-[20%] mt-4 md:mt-0"
+              className="bg-gray-900 text-sm text-white px-4 py-2 md:w-[20%] rounded-lg hover:bg-gray-800 focus:outline-none"
             >
               Add Comment
             </button>
