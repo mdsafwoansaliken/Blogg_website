@@ -60,6 +60,11 @@ const Login = () => {
           >
             Log in
           </button>
+          <Link to="/forgotPassword">
+          <button className="w-full my-4 px-4 py-2 bg-blue-800 text-white rounded-lg hover:bg-blue-500 focus:outline-none">
+            Forgot Password
+          </button>
+          </Link>
           {error && <p className="text-red-500 text-sm mt-4">Something went wrong</p>}
           <div className="flex justify-center items-center space-x-1 mt-4 text-gray-600">
             <p>New here?</p>

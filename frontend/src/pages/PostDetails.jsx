@@ -10,6 +10,7 @@ import { useContext, useEffect, useState } from "react";
 import Loader from "../components/Loader";
 import { UserContext } from "../context/UserContext";
 import { useUser } from "../context/UserContext";
+import { FaThumbsUp, FaThumbsDown } from 'react-icons/fa';
 
 const PostDetails = () => {
   const postId = useParams().id;
@@ -85,6 +86,23 @@ const PostDetails = () => {
   const postDeleteComment = (id) => {
     setComments((prevComments) => prevComments.filter((comment) => comment._id !== id));
   };
+  const handleLike = async () => {
+    try {
+      await axios.put(URL + "/api/posts/" + postId + "/like", { userId: user._id }, { withCredentials: true });
+      fetchPost();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleDislike = async () => {
+    try {
+      await axios.put(URL + "/api/posts/" + postId + "/dislike", { userId: user._id }, { withCredentials: true });
+      fetchPost();
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <div>
@@ -116,6 +134,16 @@ const PostDetails = () => {
             </div>
           </div>
           <img src={IF + post.photo} className=" mx-auto mt-8" alt="" />
+          <div className="flex justify-center items-center mt-4 space-x-4">
+        <div className="flex items-center space-x-2" onClick={handleLike}>
+          <FaThumbsUp className="text-blue-500 cursor-pointer" size={24} />
+          <span className="text-gray-600">{post.likes}</span>
+        </div>
+        <div className="flex items-center space-x-2" onClick={handleDislike}>
+          <FaThumbsDown className="text-red-500 cursor-pointer" size={24} />
+          <span className="text-gray-600">{post.dislikes}</span> 
+        </div>
+      </div>
           <p className="mx-auto mt-8">{post.desc}</p>
           <div className="flex items-center mt-8 space-x-4 font-semibold">
             <p>Categories:</p>

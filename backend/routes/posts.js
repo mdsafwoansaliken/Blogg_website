@@ -8,6 +8,7 @@ const verifyToken = require('../verifyToken')
 
 
 
+
 //CREATE
 router.post("/create",verifyToken, async(req,res)=>{
     try{
@@ -92,5 +93,72 @@ router.get("/search/:prompt",async (req,res)=>{
         res.status(500).json(err)
     }
 })
+// LIKE A POST
+router.put("/:id/like", verifyToken, async (req, res) => {
+    const { id } = req.params;
+    const { userId } = req.body;
+
+    try {
+        const post = await Post.findById(id);
+
+        if (!post) {
+            return res.status(404).json({ message: "Post not found" });
+        }
+
+        // Check if the user has already liked the post
+        if (!post.likedBy.includes(userId)) {
+            post.likes += 1;
+            post.likedBy.push(userId);
+
+            // Remove user from dislikedBy if already disliked
+            if (post.dislikedBy.includes(userId)) {
+                post.dislikes -= 1;
+                const index = post.dislikedBy.indexOf(userId);
+                post.dislikedBy.splice(index, 1);
+            }
+
+            await post.save();
+            res.json(post);
+        } else {
+            res.status(400).json({ message: "Already liked" });
+        }
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+// DISLIKE A POST
+router.put("/:id/dislike", verifyToken, async (req, res) => {
+    const { id } = req.params;
+    const { userId } = req.body;
+
+    try {
+        const post = await Post.findById(id);
+
+        if (!post) {
+            return res.status(404).json({ message: "Post not found" });
+        }
+
+        // Check if the user has already disliked the post
+        if (!post.dislikedBy.includes(userId)) {
+            post.dislikes += 1;
+            post.dislikedBy.push(userId);
+
+            // Remove user from likedBy if already liked
+            if (post.likedBy.includes(userId)) {
+                post.likes -= 1;
+                const index = post.likedBy.indexOf(userId);
+                post.likedBy.splice(index, 1);
+            }
+
+            await post.save();
+            res.json(post);
+        } else {
+            res.status(400).json({ message: "Already disliked" });
+        }
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
 
 module.exports=router
