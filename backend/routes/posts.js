@@ -56,21 +56,39 @@ router.get("/:id",async (req,res)=>{
         res.status(500).json(err)
     }
 })
-//GET POSTS
-router.get("/",async (req,res)=>{
-    const query=req.query
-    //console.log(query)
-    try{
-        const searchFilter={
-            title:{$regex:query.search, $options:"i"}
-        }
-        const posts=await Post.find(query.search?searchFilter:null)
-        res.status(200).json(posts)
+// GET POSTS
+router.get("/", async (req, res) => {
+    const query = req.query;
+    try {
+      const searchFilter = {
+        title: { $regex: query.search, $options: "i" },
+      };
+  
+      let sortOption = {};
+  
+
+      switch (query.sortBy) {
+        case "oldest":
+          sortOption = { createdAt: 1 };
+          break;
+        case "title":
+          sortOption = { title: 1 };
+          break;
+        default:
+          sortOption = { createdAt: -1 };
+          break;
+      }
+  
+      const posts = await Post.find(query.search ? searchFilter : null)
+        .sort(sortOption)
+        .exec();
+  
+      res.status(200).json(posts);
+    } catch (err) {
+      res.status(500).json(err);
     }
-    catch(err){
-        res.status(500).json(err)
-    }
-})
+  });
+  
 
 
 //GET USER POSTS
