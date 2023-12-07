@@ -10,6 +10,7 @@ import { useContext, useEffect, useState } from "react";
 import Loader from "../components/Loader";
 import { UserContext } from "../context/UserContext";
 import { useUser } from "../context/UserContext";
+import { FaThumbsUp, FaThumbsDown } from 'react-icons/fa';
 
 const PostDetails = () => {
   const postId = useParams().id;
@@ -18,6 +19,7 @@ const PostDetails = () => {
   const [comments, setComments] = useState([]);
   const [comment, setComment] = useState("");
   const [loader, setLoader] = useState(false);
+  const [views, setViews] = useState(0);
   const navigate = useNavigate();
 
   const fetchPost = async () => {
@@ -25,6 +27,7 @@ const PostDetails = () => {
     try {
       const res = await axios.get(URL + "/api/posts/" + postId);
       setPost(res.data);
+      setViews(res.data.views); // Update the views count from the fetched data
       setLoader(false);
     } catch (err) {
       console.log(err);
@@ -43,6 +46,7 @@ const PostDetails = () => {
 
   useEffect(() => {
     fetchPost();
+    fetchPostComments();
   }, [postId]);
 
   const fetchPostComments = async () => {
@@ -85,6 +89,23 @@ const PostDetails = () => {
   const postDeleteComment = (id) => {
     setComments((prevComments) => prevComments.filter((comment) => comment._id !== id));
   };
+  const handleLike = async () => {
+    try {
+      await axios.put(URL + "/api/posts/" + postId + "/like", { userId: user._id }, { withCredentials: true });
+      fetchPost();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleDislike = async () => {
+    try {
+      await axios.put(URL + "/api/posts/" + postId + "/dislike", { userId: user._id }, { withCredentials: true });
+      fetchPost();
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <div>
@@ -94,21 +115,27 @@ const PostDetails = () => {
           <Loader />
         </div>
       ) : (
-        <div className="px-8 px-[200px] mt-8">
+        <div className="px-[200px] mt-8">
           <div className="flex justify-between items-center">
             <h1 className="text-2xl font-bold text-black md:text-3xl">{post.title}</h1>
             {user?._id === post?.userId && (
               <div className="flex items-center justify-center space-x-2">
-                <p className="cursor-pointer" onClick={() => navigate("/edit/" + postId)}>
+                <p className="cursor-pointer text-gray-900 hover:text-blue-500" onClick={() => navigate("/edit/" + postId)}>
                   <BiEdit />
                 </p>
-                <p className="cursor-pointer" onClick={handleDeletePost}>
+                <p className="cursor-pointer text-gray-900 hover:text-red-500" onClick={handleDeletePost}>
                   <MdDelete />
                 </p>
               </div>
             )}
           </div>
           <div className="flex items-center justify-between mt-2 md:mt-4">
+          <div className="flex items-center space-x-2">
+              <div className="bg-gray-200 rounded-md p-2">
+                <span className="text-gray-600">Views:</span>
+                <span className="font-bold">{views}</span>
+              </div>
+            </div>
             <p>@{post.username}</p>
             <div className="flex space-x-2">
               <p>{new Date(post.updatedAt).toString().slice(0, 15)}</p>
@@ -116,6 +143,16 @@ const PostDetails = () => {
             </div>
           </div>
           <img src={IF + post.photo} className=" mx-auto mt-8" alt="" />
+          <div className="flex justify-center items-center mt-4 space-x-4">
+        <div className="flex items-center space-x-2" onClick={handleLike}>
+          <FaThumbsUp className="text-blue-500 cursor-pointer" size={24} />
+          <span className="text-gray-600">{post.likes}</span>
+        </div>
+        <div className="flex items-center space-x-2" onClick={handleDislike}>
+          <FaThumbsDown className="text-red-500 cursor-pointer" size={24} />
+          <span className="text-gray-600">{post.dislikes}</span> 
+        </div>
+      </div>
           <p className="mx-auto mt-8">{post.desc}</p>
           <div className="flex items-center mt-8 space-x-4 font-semibold">
             <p>Categories:</p>

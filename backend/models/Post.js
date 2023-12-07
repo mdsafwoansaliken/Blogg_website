@@ -28,6 +28,26 @@ const PostSchema=new mongoose.Schema({
         type:Array,
         
     },
+    likes: {
+        type: Number,
+        default: 0
+    },
+    dislikes: {
+        type: Number,
+        default: 0
+    },
+    likedBy: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }],
+    dislikedBy: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }],
+    views: {
+        type: Number,
+        default: 0
+    }
 },{timestamps:true})
 
 module.exports=mongoose.model("Post",PostSchema)

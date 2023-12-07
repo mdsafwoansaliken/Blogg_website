@@ -9,6 +9,8 @@ import EditPost from './pages/EditPost'
 import Profile from './pages/Profile'
 import { UserContextProvider } from './context/UserContext'
 import MyBlogs from './pages/MyBlogs'
+import ForgotPassword from './pages/ForgotPassword'
+import ResetPassword from './pages/ResetPassword'
 
 
 const App = () => {
@@ -24,6 +26,8 @@ const App = () => {
         <Route exact path="/edit/:id" element={<EditPost/>}/>
         <Route exact path="/myblogs/:id" element={<MyBlogs/>}/>
         <Route exact path="/profile/:id" element={<Profile/>}/>
+        <Route exact path="/forgotPassword" element={<ForgotPassword/>}/>
+        <Route exact path="/resetPassword/:id/:token" element={<ResetPassword/>}/>
       </Routes>
       </UserContextProvider>
       </BrowserRouter>
