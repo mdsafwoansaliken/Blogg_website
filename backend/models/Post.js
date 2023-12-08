@@ -43,7 +43,28 @@ const PostSchema=new mongoose.Schema({
     dislikedBy: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
-    }]
+    }],
+    views: {
+        type: Number,
+        default: 0
+    },
+    ratings: [{
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            required: true
+        },
+        rating: {
+            type: Number,
+            required: true,
+            min: 1,
+            max: 5 // Assuming 5-star rating system
+        }
+    }],
+    averageRating: {
+        type: Number,
+        default: 0 // Default average rating
+    }
 },{timestamps:true})
 
 module.exports=mongoose.model("Post",PostSchema)

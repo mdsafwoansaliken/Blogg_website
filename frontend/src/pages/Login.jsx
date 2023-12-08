@@ -30,7 +30,7 @@ const Login = () => {
       <div className="flex items-center justify-between px-6 md:px-20 py-8 bg-blue-800">
         <h1 className="text-3xl md:text-4xl font-extrabold text-white">
           <Link to="/" className="text-white">
-            Blog Market
+            TRENDIFY
           </Link>
         </h1>
         <h3>

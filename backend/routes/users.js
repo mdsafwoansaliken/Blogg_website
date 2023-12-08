@@ -70,7 +70,7 @@ router.post('/forgotPassword', async (req, res) => {
             auth: {
                 user: process.env.EMAIL,
                 pass: process.env.PASS
-            }
+            },
         });
 
         var mailOptions = {

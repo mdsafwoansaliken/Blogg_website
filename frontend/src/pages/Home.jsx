@@ -13,7 +13,7 @@ const Home = () => {
   const [posts, setPosts] = useState([]);
   const [noResults, setNoResults] = useState(false);
   const [loader, setLoader] = useState(false);
-  const [selectedSortOption, setSelectedSortOption] = useState('latest'); // Default sorting option
+  const [selectedSortOption, setSelectedSortOption] = useState('latest');
   const user = useUser();
 
   const fetchPosts = async (sortOption) => {
@@ -74,7 +74,7 @@ const Home = () => {
           <h3 className="text-center font-bold mt-1">No posts available</h3>
         )}
       </div>
-      <Footer/>
+      <Footer />
     </>
   );
 };

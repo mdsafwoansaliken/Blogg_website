@@ -25,7 +25,7 @@ const Navbar = () => {
     <div className="bg-gray-900 text-white py-4">
       <div className="container mx-auto flex items-center justify-between px-6 md:px-[200px]">
         <h1 className="text-2xl font-bold">
-          <Link to="/">Blog Market</Link>
+          <Link to="/">TRENDIFY</Link>
         </h1>
         <div className="relative flex items-center">
           <input
