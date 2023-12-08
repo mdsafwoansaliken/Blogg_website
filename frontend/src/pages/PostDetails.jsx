@@ -11,6 +11,7 @@ import Loader from "../components/Loader";
 import { UserContext } from "../context/UserContext";
 import { useUser } from "../context/UserContext";
 import { FaThumbsUp, FaThumbsDown } from 'react-icons/fa';
+import { IoIosStarOutline, IoIosStar } from 'react-icons/io';
 
 const PostDetails = () => {
   const postId = useParams().id;
@@ -21,13 +22,16 @@ const PostDetails = () => {
   const [loader, setLoader] = useState(false);
   const [views, setViews] = useState(0);
   const navigate = useNavigate();
+  const [averageRating, setAverageRating] = useState(0);
+  const [userRating, setUserRating] = useState(0);
 
   const fetchPost = async () => {
     setLoader(true);
     try {
       const res = await axios.get(URL + "/api/posts/" + postId);
       setPost(res.data);
-      setViews(res.data.views); // Update the views count from the fetched data
+      setViews(res.data.views);
+      setAverageRating(res.data.averageRating); // Set the average rating
       setLoader(false);
     } catch (err) {
       console.log(err);
@@ -44,6 +48,22 @@ const PostDetails = () => {
     }
   };
 
+  const handleUserRating = async (rating) => {
+    setUserRating(rating);
+    try {
+      // Make an API call to send the user's rating to the backend
+      await axios.post(
+        `${URL}/api/posts/${postId}/rate`,
+        { userId: user._id, rating },
+        { withCredentials: true }
+      );
+      // Optionally, fetch the post details again to update the average rating
+      fetchPost();
+    } catch (err) {
+      console.log(err);
+      // Handle error if needed
+    }
+  };
   useEffect(() => {
     fetchPost();
     fetchPostComments();
@@ -142,6 +162,21 @@ const PostDetails = () => {
               <p>{new Date(post.updatedAt).toString().slice(16, 24)}</p>
             </div>
           </div>
+        {/* New star rating section (for individual users) */}
+        <div className="mt-4 font-semibold">
+        <p>Your Score</p>
+        <div className="flex items-center space-x-3">
+          {[1, 2, 3, 4, 5].map((star) => (
+            <span
+              key={star}
+              className="cursor-pointer text-yellow-500"
+              onClick={() => handleUserRating(star)}
+            >
+              {star <= userRating ? <IoIosStar /> : <IoIosStarOutline />}
+            </span>
+          ))}
+        </div>
+      </div>
           <img src={IF + post.photo} className=" mx-auto mt-8" alt="" />
           <div className="flex justify-center items-center mt-4 space-x-4">
         <div className="flex items-center space-x-2" onClick={handleLike}>
@@ -163,6 +198,13 @@ const PostDetails = () => {
                 </div>
               ))}
             </div>
+          </div>
+          <div className="flex justify-center items-center mt-4 space-x-3 font-semibold">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <span key={star} className="text-yellow-500">
+                {star <= averageRating ? <IoIosStar /> : <IoIosStarOutline />}
+              </span>
+            ))}
           </div>
           <div className="flex flex-col mt-4">
             <h3 className="mt-6 mb-4 font-semibold">Comments</h3>

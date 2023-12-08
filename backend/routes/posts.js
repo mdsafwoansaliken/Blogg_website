@@ -55,7 +55,6 @@ router.get("/:id", async (req, res) => {
             return res.status(404).json({ message: "Post not found" });
         }
 
-        // Increment views count each time the post is accessed
         post.views = (post.views || 0) + 1;
 
         await post.save();
@@ -83,7 +82,7 @@ router.get("/", async (req, res) => {
         case "title":
           sortOption = { title: 1 };
           break;
-        // Add more cases if needed
+
         default:
           // Default to sorting by latest
           sortOption = { createdAt: -1 };
@@ -185,6 +184,39 @@ router.put("/:id/dislike", verifyToken, async (req, res) => {
         } else {
             res.status(400).json({ message: "Already disliked" });
         }
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+//USER RATINGS UPDATE
+router.post("/:id/rate", verifyToken, async (req, res) => {
+    const { id } = req.params;
+    const { userId, rating } = req.body;
+
+    try {
+        const post = await Post.findById(id);
+
+        if (!post) {
+            return res.status(404).json({ message: "Post not found" });
+        }
+
+        // Check if the user has already rated the post
+        const existingRatingIndex = post.ratings.findIndex(r => r.userId.toString() === userId);
+
+        if (existingRatingIndex !== -1) {
+            return res.status(400).json({ message: "User has already rated this post" });
+        }
+
+        // If not, add the new rating
+        post.ratings.push({ userId, rating });
+
+        // Calculate new average rating
+        const totalRatings = post.ratings.reduce((acc, curr) => acc + curr.rating, 0);
+        post.averageRating = totalRatings / post.ratings.length;
+
+        await post.save();
+        res.json(post);
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
